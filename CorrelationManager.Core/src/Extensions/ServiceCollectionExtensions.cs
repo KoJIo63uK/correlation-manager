@@ -1,9 +1,11 @@
 using System;
+using CorrelationManager.Core.Handlers;
 using CorrelationManager.Core.Interfaces;
 using CorrelationManager.Core.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Options;
 
 namespace CorrelationManager.Core.Extensions
@@ -33,7 +35,17 @@ namespace CorrelationManager.Core.Extensions
             services.TryAddSingleton(s => 
                 s.GetRequiredService<IOptions<CorrelationManagerOptions>>().Value);
             
-            services.AddScoped<ICorrelationManager, CorrelationManager.Core.Services.CorrelationManager>();
+            services.AddScoped<ICorrelationManager, Services.CorrelationManager>();
+            
+            services.AddScoped<HttpClientRequestHandler>();
+            services.AddHttpContextAccessor();
+            services.ConfigureAll<HttpClientFactoryOptions>(factoryOptions =>
+            {
+                factoryOptions.HttpMessageHandlerBuilderActions.Add(builder =>
+                {
+                    builder.AdditionalHandlers.Add(builder.Services.GetRequiredService<HttpClientRequestHandler>());
+                });
+            });
         }
 
         /// <summary>

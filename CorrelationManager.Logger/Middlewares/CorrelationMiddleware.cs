@@ -33,6 +33,13 @@ namespace CorrelationManager.Logger.Middlewares
             // ensures all entries are tagged with some values
             using (_logger.BeginScope(correlationManager.CorrelationHeader))
             {
+                context.Response.OnStarting(state =>
+                {
+                    context.Response.Headers.Add(correlationManager.CorrelationHeader.Key,
+                        correlationManager.CorrelationHeader.Value.ToString());
+                
+                    return Task.CompletedTask;
+                }, context);
                 // Call the next delegate/middleware in the pipeline
                 return _next(context);
             }
