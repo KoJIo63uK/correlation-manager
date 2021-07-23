@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorrelationManager.Core", "CorrelationManager.Core\CorrelationManager.Core.csproj", "{83706802-76F2-44F8-9409-44A39D522783}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B9D9A30-4E83-49B5-9977-2D2711F66509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B9D9A30-4E83-49B5-9977-2D2711F66509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B9D9A30-4E83-49B5-9977-2D2711F66509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B9D9A30-4E83-49B5-9977-2D2711F66509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83706802-76F2-44F8-9409-44A39D522783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83706802-76F2-44F8-9409-44A39D522783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83706802-76F2-44F8-9409-44A39D522783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83706802-76F2-44F8-9409-44A39D522783}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
