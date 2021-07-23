@@ -6,12 +6,20 @@ namespace CorrelationManager.Logger.Extensions
     public static class ApplicationBuilder
     {
         /// <summary>
-        /// Registration correlation middlware
+        /// Registration correlation middleware
         /// </summary>
         /// <param name="app"></param>
         public static void UseCorrelationLogger(this IApplicationBuilder app)
         {
             app.UseMiddleware<CorrelationMiddleware>();
+        }
+        /// <summary>
+        /// Registration request logging middleware
+        /// </summary>
+        /// <param name="app"></param>
+        public static void UseRequestLogger(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<RequestLoggingMiddleware>();
         }
     }
 }

@@ -217,6 +217,18 @@ namespace CorrelationManager.Logger.Formatters
                 case null:
                     writer.WriteNull(key);
                     break;
+                case DateTime dateTimeValue:
+                    var dateTimeValueString = FormatterOptions.UseUtcTimestamp
+                        ? dateTimeValue.ToUniversalTime().ToString(FormatterOptions.TimestampFormat)
+                        : dateTimeValue.ToString(FormatterOptions.TimestampFormat);
+                    writer.WriteString(key, dateTimeValueString);
+                    break;
+                case DateTimeOffset dateTimeOffsetValue:
+                    var dateTimeOffsetValueString = FormatterOptions.UseUtcTimestamp
+                        ? dateTimeOffsetValue.ToUniversalTime().ToString(FormatterOptions.TimestampFormat)
+                        : dateTimeOffsetValue.ToString(FormatterOptions.TimestampFormat);
+                    writer.WriteString(key, dateTimeOffsetValueString);
+                    break;
                 default:
                     writer.WriteString(key, ToInvariantString(item.Value));
                     break;
