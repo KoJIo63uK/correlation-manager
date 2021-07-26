@@ -2,6 +2,10 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <Title>CorrelationManager.Logger </Title>
+        <Authors>KoJIo63uK</Authors>
+        <Description>Json logger with correlation id.</Description>
+        <PackageProjectUrl>https://github.com/KoJIo63uK/correlation-manager</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,7 +16,6 @@
       <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-      <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
     </ItemGroup>
 
 </Project>

@@ -3,6 +3,11 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <RootNamespace>CorrelationManager.Core</RootNamespace>
+        <Title>Correlation manager</Title>
+        <Authors>KoJIo63uK</Authors>
+        <Description>Correlation manager for structured logging.</Description>
+        <PackageProjectUrl>https://github.com/KoJIo63uK/correlation-manager</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/KoJIo63uK/correlation-manager</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>

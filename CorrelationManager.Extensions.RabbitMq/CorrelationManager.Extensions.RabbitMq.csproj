@@ -3,6 +3,10 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <RootNamespace>CorrelationManager.RabbitMq</RootNamespace>
+        <Title>CorrelationManager.Extensions.RabbitMq</Title>
+        <Authors>KoJIo63uK</Authors>
+        <Description>Extensions for rabbitMq client for send and catch correlation_id.</Description>
+        <PackageProjectUrl>https://github.com/KoJIo63uK/correlation-manager</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
