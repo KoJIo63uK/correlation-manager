@@ -2,8 +2,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CorrelationManager.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using CorrelationManager.Core.Services;
 
 namespace CorrelationManager.Core.Handlers
 {
@@ -12,26 +11,20 @@ namespace CorrelationManager.Core.Handlers
     /// </summary>
     public class HttpClientRequestHandler : DelegatingHandler
     {
-        private readonly IHttpContextAccessor _accessor;
         private readonly ICorrelationManager _correlationManager;
 
-        public HttpClientRequestHandler(IHttpContextAccessor accessor, ICorrelationManager correlationManager)
+        public HttpClientRequestHandler(ICorrelationManagerFactory factory)
         {
-            _accessor = accessor;
-            _correlationManager = correlationManager;
+            _correlationManager = factory.CreateCorrelationManager();
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            var correlationManager = _accessor.HttpContext != null ? 
-                _accessor.HttpContext.RequestServices.GetRequiredService<ICorrelationManager>() : 
-                _correlationManager;
-            
-            if (!request.Headers.Contains(correlationManager.CorrelationHeader.Key))
+            if (!request.Headers.Contains(_correlationManager.CorrelationHeader.Key))
             {
-                request.Headers.Add(correlationManager.CorrelationHeader.Key,
-                    correlationManager.CorrelationHeader.Value.ToString());
+                request.Headers.Add(_correlationManager.CorrelationHeader.Key,
+                    _correlationManager.CorrelationHeader.Value.ToString());
             }
 
             return await base.SendAsync(request, cancellationToken);

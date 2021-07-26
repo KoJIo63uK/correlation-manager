@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorrelationManager.Core", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorrelationManager.Logger", "CorrelationManager.Logger\CorrelationManager.Logger.csproj", "{A3F0ABE2-5F8B-4061-B93F-937756519D6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorrelationManager.Extensions.RabbitMq", "CorrelationManager.Extensions.RabbitMq\CorrelationManager.Extensions.RabbitMq.csproj", "{D7F399E2-471D-4FEF-8F98-56DA0A8EA380}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -5,7 +5,7 @@ using CorrelationManager.Core.Options;
 
 namespace CorrelationManager.Core.Services
 {
-    public class CorrelationManager: ICorrelationManager
+    internal class CorrelationManager: ICorrelationManager
     {
         private readonly string _correlationHeaderName;
 

@@ -2,6 +2,7 @@ using System;
 using CorrelationManager.Core.Handlers;
 using CorrelationManager.Core.Interfaces;
 using CorrelationManager.Core.Options;
+using CorrelationManager.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -36,6 +37,7 @@ namespace CorrelationManager.Core.Extensions
                 s.GetRequiredService<IOptions<CorrelationManagerOptions>>().Value);
             
             services.AddScoped<ICorrelationManager, Services.CorrelationManager>();
+            services.AddScoped<ICorrelationManagerFactory, CorrelationManagerFactory>();
             
             services.AddScoped<HttpClientRequestHandler>();
             services.AddHttpContextAccessor();
