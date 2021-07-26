@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using CorrelationManager.Core.Constants;
 using CorrelationManager.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace CorrelationManager.Logger.Middlewares
 {
@@ -14,12 +13,10 @@ namespace CorrelationManager.Logger.Middlewares
     public class CorrelationMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<CorrelationMiddleware> _logger;
 
-        public CorrelationMiddleware(RequestDelegate next, ILogger<CorrelationMiddleware> logger)
+        public CorrelationMiddleware(RequestDelegate next)
         {
             _next = next;
-            _logger = logger;
         }
         
         public Task InvokeAsync(HttpContext context, ICorrelationManager correlationManager)
@@ -31,9 +28,9 @@ namespace CorrelationManager.Logger.Middlewares
             if (!string.IsNullOrWhiteSpace(correlationHeader)) correlationManager.CorrelationId = correlationHeader;
             
             // ensures all entries are tagged with some values
-            using (_logger.BeginScope(correlationManager.CorrelationHeader))
+            using (correlationManager.CreateScope())
             {
-                context.Response.OnStarting(state =>
+                context.Response.OnStarting(_ =>
                 {
                     context.Response.Headers.Add(correlationManager.CorrelationHeader.Key,
                         correlationManager.CorrelationHeader.Value.ToString());

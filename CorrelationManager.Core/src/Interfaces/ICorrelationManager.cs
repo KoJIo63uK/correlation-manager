@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace CorrelationManager.Core.Interfaces
@@ -12,5 +13,10 @@ namespace CorrelationManager.Core.Interfaces
         /// Header for correlation
         /// </summary>
         public KeyValuePair<string, object> CorrelationHeader { get; }
+        /// <summary>
+        /// Create logging scope
+        /// </summary>
+        /// <returns></returns>
+        IDisposable CreateScope();
     }
 }

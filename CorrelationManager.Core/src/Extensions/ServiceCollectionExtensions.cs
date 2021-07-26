@@ -37,7 +37,7 @@ namespace CorrelationManager.Core.Extensions
                 s.GetRequiredService<IOptions<CorrelationManagerOptions>>().Value);
             
             services.AddScoped<ICorrelationManager, Services.CorrelationManager>();
-            services.AddScoped<ICorrelationManagerFactory, CorrelationManagerFactory>();
+            services.AddSingleton<ICorrelationManagerFactory, CorrelationManagerFactory>();
             
             services.AddScoped<HttpClientRequestHandler>();
             services.AddHttpContextAccessor();
