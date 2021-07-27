@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -79,13 +78,19 @@ namespace CorrelationManager.Logger.Formatters
                     {
                         writer.WriteStartObject(nameof(logEntry.State));
                         writer.WriteString("Message", logEntry.State.ToString());
+                        
                         if (logEntry.State is IReadOnlyCollection<KeyValuePair<string, object>> stateProperties)
                         {
                             foreach (KeyValuePair<string, object> item in stateProperties)
                             {
-                                var properties = item.Value.GetType().GetProperties();
-                                if (item.Key != "{OriginalFormat}" && properties.Any())
+                                if (item.Value is string)
                                 {
+                                    WriteItem(writer, item);
+                                }
+                                else
+                                {
+                                    var properties = item.Value.GetType().GetProperties();
+
                                     writer.WriteStartObject(item.Key);
                                     foreach (var o in properties)
                                     {
@@ -94,10 +99,6 @@ namespace CorrelationManager.Logger.Formatters
                                     }
 
                                     writer.WriteEndObject();
-                                }
-                                else
-                                {
-                                    WriteItem(writer, item);
                                 }
                             }
                         }
