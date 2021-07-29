@@ -6,7 +6,8 @@
         <Authors>KoJIo63uK</Authors>
         <Description>Json logger with correlation id.</Description>
         <PackageProjectUrl>https://github.com/KoJIo63uK/correlation-manager</PackageProjectUrl>
-        <PackageVersion>1.0.1</PackageVersion>
+        <PackageVersion>1.0.2</PackageVersion>
+        <PackageReleaseNotes>Fix objects serialization in JsonConsoleFormatter.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
