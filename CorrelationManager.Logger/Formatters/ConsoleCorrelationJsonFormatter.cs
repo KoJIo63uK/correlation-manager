@@ -16,8 +16,6 @@ namespace CorrelationManager.Logger.Formatters
     internal sealed class ConsoleCorrelationJsonFormatter : ConsoleFormatter, IDisposable
     {
         private const string FORMATTER_NAME = "correlationJson";
-        private const int MAX_SERIALIZATION_DEPTH = 1;
-        private int _serializationDepth;
 
         private readonly IDisposable _optionsReloadToken;
         private readonly CorrelationManagerOptions _correlationManagerOptions;
@@ -102,7 +100,6 @@ namespace CorrelationManager.Logger.Formatters
             }
 
             textWriter.Write(Environment.NewLine);
-            _serializationDepth = 0;
         }
 
         private static string GetLogLevelString(LogLevel logLevel)
@@ -217,27 +214,8 @@ namespace CorrelationManager.Logger.Formatters
                         : dateTimeOffsetValue.ToString(FormatterOptions.TimestampFormat);
                     writer.WriteString(key, dateTimeOffsetValueString);
                     break;
-                case string:
-                    writer.WriteString(key, ToInvariantString(item.Value));
-                    break;
                 default:
-                    if (_serializationDepth < MAX_SERIALIZATION_DEPTH)
-                    {
-                        _serializationDepth++;
-                        var properties = item.Value.GetType().GetProperties();
-                                
-                        writer.WriteStartObject(item.Key);
-                        foreach (var o in properties)
-                        {
-                            WriteItem(writer,
-                                new KeyValuePair<string, object>(o.Name, o.GetValue(item.Value)));
-                        }
-                        writer.WriteEndObject();
-                    }
-                    else
-                    {
-                        writer.WriteString(key, ToInvariantString(item.Value));
-                    }
+                    writer.WriteString(key, ToInvariantString(item.Value));
                     break;
             }
         }

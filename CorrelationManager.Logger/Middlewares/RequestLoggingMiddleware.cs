@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +28,14 @@ namespace CorrelationManager.Logger.Middlewares
             httpContext.Response.OnStarting(state =>
             {
                 var context = state as HttpContext;
-                logger.LogInformation("{@RequestInformation}", new RequestInformation(context));
+                var requestInformation = new RequestInformation(context);
+
+                logger.Log(logLevel: LogLevel.Information,
+                    eventId: new EventId(),
+                    state: requestInformation.State,
+                    exception: null,
+                    formatter: requestInformation.Callback);
+                
                 return Task.CompletedTask;
             }, httpContext);
 
@@ -36,21 +45,28 @@ namespace CorrelationManager.Logger.Middlewares
 
     internal class RequestInformation
     {
-        public string Path { get; set; }
-        public string Referer { get; set; }
-        public string XForwardedFor { get; set; }
-        public string Protocol { get; set; }
-        public string Method { get; set; }
-        public string RemoteIp { get; set; }
-        public string RemoteHost { get; set; }
-        public int RemotePort { get; set; }
-        public DateTime RequestReceivedAt { get; set; }
-        public double ResponseTimeMs { get; set; }
-        public int ResponseStatus { get; set; }
-        public string ResponseContentType { get; set; }
-        public DateTime ResponseSentAt { get; set; }
-
         public const string REQUEST_AT = "RequestAt";
+        
+        private readonly string _host;
+        private readonly string _scheme;
+        private readonly string _pathBase;
+        private readonly string _path;
+        private readonly string _query;
+        private readonly string _requestContentType;
+        private readonly long? _requestContentLength;
+        private readonly string _fullPath;
+        private readonly string _referer;
+        private readonly string _xForwardedFor;
+        private readonly string _protocol;
+        private readonly string _method;
+        private readonly string _remoteIp;
+        private readonly string _remoteHost;
+        private readonly int _remotePort;
+        private readonly DateTime _requestReceivedAt;
+        private readonly double _responseTimeMs;
+        private readonly int _responseStatus;
+        private readonly string _responseContentType;
+        private readonly DateTime _responseSentAt;
 
         public RequestInformation(HttpContext context)
         {
@@ -70,19 +86,71 @@ namespace CorrelationManager.Logger.Middlewares
             var requestReceivedAt = context.Items[REQUEST_AT] as DateTime? ?? default;
             var responseSentAt = DateTime.Now;
 
-            Path = context.Request.Path;
-            Referer = context.Request.Headers[HeaderNames.Referer];
-            XForwardedFor = context.Request.Headers[HeaderNames.Referer];
-            Protocol = context.Request.Protocol;
-            Method = context.Request.Method;
-            RemoteIp = context.Connection.RemoteIpAddress?.ToString();
-            RemoteHost = remoteHost;
-            RemotePort = context.Connection.RemotePort;
-            RequestReceivedAt = requestReceivedAt;
-            ResponseContentType = context.Response.ContentType;
-            ResponseSentAt = responseSentAt;
-            ResponseTimeMs = (responseSentAt - requestReceivedAt).TotalMilliseconds;
-            ResponseStatus = context.Response.StatusCode;
+            _fullPath = context.Request.Path;
+            _referer = context.Request.Headers[HeaderNames.Referer];
+            _xForwardedFor = context.Request.Headers[HeaderNames.Referer];
+            _protocol = context.Request.Protocol;
+            _method = context.Request.Method;
+            _remoteIp = context.Connection.RemoteIpAddress?.ToString();
+            _remoteHost = remoteHost;
+            _remotePort = context.Connection.RemotePort;
+            _requestReceivedAt = requestReceivedAt;
+            _responseContentType = context.Response.ContentType;
+            _responseSentAt = responseSentAt;
+            _responseTimeMs = (responseSentAt - requestReceivedAt).TotalMilliseconds;
+            _responseStatus = context.Response.StatusCode;
+
+            _host = context.Request.Host.Value;
+            _scheme = context.Request.Scheme;
+            _pathBase = context.Request.PathBase;
+            _query = context.Request.QueryString.Value;
+            _requestContentType = context.Request.ContentType;
+            _requestContentLength = context.Request.ContentLength;
+            _path = context.Request.Path;
+            
+            _fullPath = string.Format(CultureInfo.InvariantCulture, 
+                "{0}://{1}{2}{3}{4}",
+                _scheme,
+                _host,
+                _pathBase,
+                _path,
+                _query);
+        }
+        
+        public IReadOnlyList<KeyValuePair<string, object>> State => new[]
+        {
+            new KeyValuePair<string, object>(nameof(_fullPath), _fullPath),
+            new KeyValuePair<string, object>(nameof(_referer), _referer),
+            new KeyValuePair<string, object>(nameof(_xForwardedFor), _xForwardedFor),
+            new KeyValuePair<string, object>(nameof(_protocol), _method),
+            new KeyValuePair<string, object>(nameof(_remoteIp), _remoteIp),
+            new KeyValuePair<string, object>(nameof(_remoteHost), _remoteHost),
+            new KeyValuePair<string, object>(nameof(_remotePort), _remotePort),
+            new KeyValuePair<string, object>(nameof(_requestReceivedAt), _requestReceivedAt),
+            new KeyValuePair<string, object>(nameof(_responseTimeMs), _responseTimeMs),
+            new KeyValuePair<string, object>(nameof(_responseStatus), _responseStatus),
+            new KeyValuePair<string, object>(nameof(_responseContentType), _responseContentType),
+            new KeyValuePair<string, object>(nameof(_responseSentAt), _responseSentAt)
+        };
+
+        public Func<IReadOnlyList<KeyValuePair<string, object>>, Exception, string> Callback =>
+            (_, _) => ToString();
+
+        public override string ToString()
+        {
+            return string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Request {0} {1} {2}://{3}{4}{5}{6} {7} {8} {9}",
+                    _protocol,
+                    _method,
+                    _scheme,
+                    _host,
+                    _pathBase,
+                    _path,
+                    _query,
+                    _requestContentType,
+                    _requestContentLength,
+                    _responseStatus);
         }
     }
 }
