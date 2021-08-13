@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>Correlation manager</title>
+    <authors>KoJIo63uK</authors>
+    <owners>KoJIo63uK</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/KoJIo63uK/correlation-manager</projectUrl>
+    <description>Correlation manager for structured logging.</description>
+    <releaseNotes>$notes$</releaseNotes>
+  </metadata>
+</package>
