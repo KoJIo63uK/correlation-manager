@@ -1,6 +1,8 @@
 name: core-actions
 
-on: [push]
+on:
+  release:
+    types: [ published ]
 
 jobs:
   build:
@@ -11,11 +13,42 @@ jobs:
         
     steps:
       - uses: actions/checkout@v2
+      
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-      - name: Install dependencies
-        run: dotnet restore
+          source-url: https://nuget.pkg.github.com/koJIo63uK/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build -c Release
+        
+      - name: Echo ref
+        run: echo ${GITHUB_REF/refs\/tags\//}
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+      
+      - name: Get release
+        id: release
+        uses: cardinalby/git-get-release-action@v1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.get_version.outputs.version }}
+          
+      - name: Print release
+        run: echo ${{ steps.release.outputs.body }}
+
+      - name: Create the package
+        run: | 
+          nuget pack CorrelationManager.Core/CorrelationManager.Core.csproj \
+          -OutputDirectory CorrelationManager.Core/bin/Release/ \
+          -Version ${{ steps.get_version.outputs.VERSION }} \
+          -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
+      
+      - name: Publish the package to GPR
+        run: dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg
