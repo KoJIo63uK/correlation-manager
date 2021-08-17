@@ -66,7 +66,7 @@ jobs:
         
       - name: Publish the packages to Nuget.org
         run: |
-          dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg -s https://www.nuget.org/ -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a --skip-duplicate
-          dotnet nuget push CorrelationManager.Logger/bin/Release/*.nupkg -s https://www.nuget.org/ -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a --skip-duplicate
-          dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg -s https://www.nuget.org/ -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a --skip-duplicate
+          dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg -s https://www.nuget.org/ -k ${{ secrets.NUGET_ORG_TOKEN }} --skip-duplicate
+          dotnet nuget push CorrelationManager.Logger/bin/Release/*.nupkg -s https://www.nuget.org/ -k ${{ secrets.NUGET_ORG_TOKEN }} --skip-duplicate
+          dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg -s https://www.nuget.org/ -k ${{ secrets.NUGET_ORG_TOKEN }} --skip-duplicate
         
