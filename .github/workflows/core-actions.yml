@@ -58,11 +58,15 @@ jobs:
           -Version ${{ steps.get_version.outputs.version }} \
           -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
       
-      - name: Publish the CorrelationManager.Core package to GPR
-        run: dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg
-        
-      - name: Publish the CorrelationManager.Logger package to GPR
-        run: dotnet nuget push CorrelationManager.Logger/bin/Release/*.nupkg
+      - name: Publish the packages to GPR
+        run: |
+          dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg
+          dotnet nuget push CorrelationManager.Logger/bin/Release/*.nupkg
+          dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg
         
       - name: Publish the CorrelationManager.Extensions.RabbitMq package to GPR
-        run: dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg
+        run: |
+          dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a
+          dotnet nuget push nuget push CorrelationManager.Logger/bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a
+          dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a
+        
