@@ -24,9 +24,6 @@ jobs:
       
       - name: Build
         run: dotnet build -c Release
-        
-      - name: Echo ref
-        run: echo ${GITHUB_REF/refs\/tags\//}
 
       - name: Get the version
         id: get_version
@@ -40,15 +37,32 @@ jobs:
         with:
           tag: ${{ steps.get_version.outputs.version }}
           
-      - name: Print release
-        run: echo ${{ steps.release.outputs.body }}
-
-      - name: Create the package
+      - name: Create the package CorrelationManager.Core
         run: | 
           nuget pack CorrelationManager.Core/CorrelationManager.Core.csproj \
           -OutputDirectory CorrelationManager.Core/bin/Release/ \
-          -Version ${{ steps.get_version.outputs.VERSION }} \
+          -Version ${{ steps.get_version.outputs.version }} \
+          -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
+          
+      - name: Create the package CorrelationManager.Logger
+        run: |
+          nuget pack CorrelationManager.Logger/CorrelationManager.Logger.csproj \
+          -OutputDirectory CorrelationManager.Logger/bin/Release/ \
+          -Version ${{ steps.get_version.outputs.version }} \
+          -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
+          
+      - name: Create the package CorrelationManager.Extensions.RabbitMq
+        run: |
+          nuget pack CorrelationManager.Extensions.RabbitMq/CorrelationManager.Extensions.RabbitMq.csproj \
+          -OutputDirectory CorrelationManager.Extensions.RabbitMq/bin/Release/ \
+          -Version ${{ steps.get_version.outputs.version }} \
           -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
       
-      - name: Publish the package to GPR
+      - name: Publish the CorrelationManager.Core package to GPR
         run: dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg
+        
+      - name: Publish the CorrelationManager.Logger package to GPR
+        run: dotnet nuget push CorrelationManager.Logger/bin/Release/*.nupkg
+        
+      - name: Publish the CorrelationManager.Extensions.RabbitMq package to GPR
+        run: dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg
