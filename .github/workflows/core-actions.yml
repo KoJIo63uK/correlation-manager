@@ -1,0 +1,72 @@
+name: core-actions
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix: 
+        dotnet-version: ['5.0.x']
+        
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+          source-url: https://nuget.pkg.github.com/koJIo63uK/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      
+      - name: Build
+        run: dotnet build -c Release
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+      
+      - name: Get release
+        id: release
+        uses: cardinalby/git-get-release-action@v1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.get_version.outputs.version }}
+          
+      - name: Create the package CorrelationManager.Core
+        run: | 
+          nuget pack CorrelationManager.Core/CorrelationManager.Core.csproj \
+          -OutputDirectory CorrelationManager.Core/bin/Release/ \
+          -Version ${{ steps.get_version.outputs.version }} \
+          -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
+          
+      - name: Create the package CorrelationManager.Logger
+        run: |
+          nuget pack CorrelationManager.Logger/CorrelationManager.Logger.csproj \
+          -OutputDirectory CorrelationManager.Logger/bin/Release/ \
+          -Version ${{ steps.get_version.outputs.version }} \
+          -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
+          
+      - name: Create the package CorrelationManager.Extensions.RabbitMq
+        run: |
+          nuget pack CorrelationManager.Extensions.RabbitMq/CorrelationManager.Extensions.RabbitMq.csproj \
+          -OutputDirectory CorrelationManager.Extensions.RabbitMq/bin/Release/ \
+          -Version ${{ steps.get_version.outputs.version }} \
+          -Properties "Configuration=Release;notes=${{ steps.release.outputs.body }}"
+      
+      - name: Publish the packages to GPR
+        run: |
+          dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg
+          dotnet nuget push CorrelationManager.Logger/bin/Release/*.nupkg
+          dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg
+        
+      - name: Publish the CorrelationManager.Extensions.RabbitMq package to GPR
+        run: |
+          dotnet nuget push CorrelationManager.Core/bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a
+          dotnet nuget push nuget push CorrelationManager.Logger/bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a
+          dotnet nuget push CorrelationManager.Extensions.RabbitMq/bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k oy2mzypvyfmr3422qa4qfd7d4v5tkikuhb7t5k4m7phq4a
+        

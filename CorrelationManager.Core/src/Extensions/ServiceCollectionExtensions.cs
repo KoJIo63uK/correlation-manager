@@ -23,6 +23,7 @@ namespace CorrelationManager.Core.Extensions
             Action<CorrelationManagerOptions> options = null)
         {
             var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            
             if (options != null)
             {
                 services.ConfigureCorrelationManager(options);

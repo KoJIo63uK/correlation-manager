@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>CorrelationManager.Extensions.RabbitMq</title>
+    <authors>KoJIo63uK</authors>
+    <owners>KoJIo63uK</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <repository type="git" url="https://github.com/KoJIo63uK/correlation-manager"/>
+    <description>Extensions for rabbitMq client for send and catch correlation_id.</description>
+    <releaseNotes>$notes$</releaseNotes>
+  </metadata>
+</package>
